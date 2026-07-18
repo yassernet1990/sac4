@@ -1,0 +1,26 @@
+name: Animate service strip
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/animate-strip.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch strip animation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          old_css = ".strip{position:absolute;bottom:0;left:0;right:0;background:var(--l);color:var
