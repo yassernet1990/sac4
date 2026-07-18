@@ -1,26 +1,28 @@
 name: Animate service strip
-
 on:
   push:
     branches: [main]
-    paths:
-      - '.github/workflows/animate-strip.yml'
+    paths: ['.github/workflows/animate-strip.yml']
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   patch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Patch strip animation
+      - name: Add seamless ticker
         run: |
           python3 - <<'PY'
           from pathlib import Path
-
-          path = Path('index.html')
-          text = path.read_text(encoding='utf-8')
-
-          old_css = ".strip{position:absolute;bottom:0;left:0;right:0;background:var(--l);color:var
+          p=Path('index.html'); s=p.read_text()
+          css='''.strip{overflow:hidden;display:block;padding:0}.strip-track{display:flex;width:max-content;will-change:transform;animation:sacTicker 22s linear infinite}.strip-group{display:flex;align-items:center;gap:26px;white-space:nowrap;padding:20px 13px;color:var(--d)}@keyframes sacTicker{to{transform:translateX(-50%)}}body[dir=rtl] .strip-track{animation-name:sacTickerRtl}@keyframes sacTickerRtl{to{transform:translateX(50%)}}@media(max-width:650px){.strip{font-size:8px}.strip-group{gap:16px;padding:18px 8px}}@media(prefers-reduced-motion:reduce){.strip-track{animation:none}}'''
+          js='''<script>(()=>{const s=document.querySelector('.strip');if(!s||s.querySelector('.strip-track'))return;const h=s.innerHTML;const t=document.createElement('div');t.className='strip-track';t.innerHTML='<div class="strip-group">'+h+'</div><div class="strip-group" aria-hidden="true">'+h+'</div>';s.innerHTML='';s.appendChild(t)})();</script>'''
+          s=s.replace('</style>',css+'</style>').replace('</body>',js+'</body>')
+          p.write_text(s)
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git commit -m "Animate green ticker strip" || exit 0
+          git push
