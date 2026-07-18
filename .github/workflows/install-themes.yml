@@ -1,0 +1,25 @@
+name: Install themes
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/install-themes.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text()
+          if 'themes.css' not in s:s=s.replace('<link rel="stylesheet" href="style.css">','<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="themes.css"><script src="theme-loader.js"></script>')
+          p.write_text(s)
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git commit -m "Connect ten identity themes" || exit 0
+          git push
