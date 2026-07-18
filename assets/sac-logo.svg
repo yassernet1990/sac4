@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 538 389" role="img" aria-labelledby="title desc">
+  <title id="title">SAC Logistics</title>
+  <desc id="desc">Angular SAC Logistics brand mark.</desc>
+  <style>
+    :root{--logo-main:#102a43;--logo-accent:#ff8a00}
+    .mark{cursor:pointer;transform-origin:center;transition:transform .26s ease,filter .26s ease}
+    .shape{fill:var(--logo-main);transform-box:fill-box;transform-origin:center;transition:fill .26s ease,transform .26s ease}
+    .mark:hover,.mark:focus-visible{transform:translateY(-2px) scale(1.03);filter:drop-shadow(0 10px 18px rgba(0,0,0,.18));outline:none}
+    .mark:hover
