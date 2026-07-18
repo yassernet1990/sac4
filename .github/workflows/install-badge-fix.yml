@@ -1,0 +1,29 @@
+name: Install badge fix
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/install-badge-fix.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch homepage
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          tag='<script src="badge-fix-v7.js?v=7"></script>'
+          if tag not in s:
+              s=s.replace('<script src="app.js"></script>',tag+'<script src="app.js"></script>')
+          p.write_text(s)
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git commit -m "Load forced hero badge theme fix" || exit 0
+          git push
