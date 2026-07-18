@@ -16,11 +16,14 @@ jobs:
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          s=s.replace('badge-fix-v7.js?v=7','badge-fix-v7.js?v=10')
+          s=s.replace('<link rel="stylesheet" href="themes.css">','')
+          s=s.replace('<script src="theme-loader.js?v=4"></script>','')
+          s=s.replace('badge-fix-v7.js?v=7','badge-fix-v7.js?v=11')
           p.write_text(s)
           PY
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add index.html
-          git commit -m "Load fresh theme engine" || exit 0
+          git commit -m "Use one working theme engine" || exit 0
           git push
+# retrigger 11
