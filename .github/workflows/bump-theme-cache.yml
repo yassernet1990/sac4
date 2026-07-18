@@ -1,0 +1,26 @@
+name: Bump theme cache
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/bump-theme-cache.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          s=s.replace('badge-fix-v7.js?v=7','badge-fix-v7.js?v=10')
+          p.write_text(s)
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git commit -m "Load fresh theme engine" || exit 0
+          git push
